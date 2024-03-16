@@ -1,7 +1,9 @@
 import 'package:cs492_weather_app/models/weather_forecast.dart';
+import 'package:flutter/widgets.dart';
 import '../../models/user_location.dart';
 import 'package:flutter/material.dart';
 import '../location/location.dart';
+import '../shortforecast/short_forecast.dart';
 
 class WeatherScreen extends StatefulWidget {
   final Function getLocation;
@@ -21,14 +23,61 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  late final PageController _controller;
+  int _currentPage = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController()
+      ..addListener(() {
+        setState(() {
+          _currentPage = _controller.page!.round();
+        });
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return (widget.getLocation() != null && widget.getForecasts().isNotEmpty
-        ? ForecastWidget(
-            context: context,
-            location: widget.getLocation(),
-            forecasts: widget.getForecastsHourly())
-        : LocationWidget(widget: widget));
+        ? Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  2,
+                  (int index) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.all(4.0),
+                    height: 10,
+                    width: 10,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _currentPage == index ? Colors.blue : Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  children: [
+                    ForecastWidget(
+                      context: context,
+                      location: widget.getLocation(),
+                      forecasts: widget.getForecastsHourly(),
+                    ),
+                    ForecastWidget(
+                      context: context,
+                      location: widget.getLocation(),
+                      forecasts: widget.getForecasts(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
+        : Center(child: CircularProgressIndicator()));
   }
 }
 
@@ -45,12 +94,28 @@ class ForecastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LocationTextWidget(location: location),
-        TemperatureWidget(forecasts: forecasts),
-        DescriptionWidget(forecasts: forecasts)
-      ],
+    // TODO: implement the view that I want. This is what is displayed on the home screen.
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 01, 0),
+            child: LocationTextWidget(location: location),
+          ),
+          TemperatureWidget(forecasts: forecasts),
+          DescriptionWidget(forecasts: forecasts),
+          Expanded(
+            child: ListView(
+                children: forecasts
+                    .skip(1)
+                    .take(23)
+                    .map((forecast) => ShortForecasts(forecast: forecast))
+                    .toList()),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -110,8 +175,10 @@ class LocationTextWidget extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: SizedBox(
         width: 500,
-        child: Text("${location.city}, ${location.state}, ${location.zip}",
-            style: Theme.of(context).textTheme.headlineSmall),
+        child: Center(
+          child: Text("${location.city}, ${location.state}, ${location.zip}",
+              style: Theme.of(context).textTheme.headlineSmall),
+        ),
       ),
     );
   }
@@ -136,8 +203,7 @@ class LocationWidget extends StatelessWidget {
             child: Text("Requires a location to begin"),
           ),
           Location(
-              setLocation: widget.setLocation,
-              getLocation: widget.getLocation),
+              setLocation: widget.setLocation, getLocation: widget.getLocation),
         ],
       ),
     );

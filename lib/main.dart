@@ -4,6 +4,7 @@ import 'components/location/location.dart';
 import 'package:flutter/material.dart';
 import 'models/user_location.dart';
 import 'components/weatherScreen/weather_screen.dart';
+
 import 'models/weather_forecast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,15 +21,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String title = "Ds Weather App";
     return ValueListenableBuilder<ThemeMode>(
         valueListenable: _notifier,
         builder: (_, mode, __) {
           return MaterialApp(
-            title: 'CS 492 Weather App',
+            title: title,
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
             themeMode: mode,
-            home: MyHomePage(title: "CS492 Weather App", notifier: _notifier),
+            home: MyHomePage(title: title, notifier: _notifier),
           );
         });
   }
@@ -65,8 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _getForecasts() async {
     if (_location != null) {
       // We collect both the twice-daily forecasts and the hourly forecasts
-      List<WeatherForecast> forecasts = await getWeatherForecasts(_location!, false);
-      List<WeatherForecast> forecastsHourly = await getWeatherForecasts(_location!, true);
+      List<WeatherForecast> forecasts =
+          await getWeatherForecasts(_location!, false);
+      List<WeatherForecast> forecastsHourly =
+          await getWeatherForecasts(_location!, true);
       setState(() {
         _forecasts = forecasts;
         _forecastsHourly = forecastsHourly;
@@ -81,7 +85,6 @@ class _MyHomePageState extends State<MyHomePage> {
   List<WeatherForecast> getForecastsHourly() {
     return _forecastsHourly;
   }
-
 
   UserLocation? getLocation() {
     return _location;
@@ -142,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(widget.title),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
@@ -222,3 +226,67 @@ class SettingsHeaderText extends StatelessWidget {
     );
   }
 }
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:page_view_indicators/page_view_indicators.dart';
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatefulWidget {
+//   @override
+//   _MyAppState createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> {
+//   final _pageController = PageController();
+//   final _currentPageNotifier = ValueNotifier<int>(0);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(
+//           title: Text('Swipeable Lists'),
+//         ),
+//         body: Column(
+//           children: [
+//             CirclePageIndicator(
+//               selectedDotColor: Colors.blue,
+//               dotColor: Colors.grey,
+//               itemCount: 2,
+//               currentPageNotifier: _currentPageNotifier,
+//             ),
+//             Expanded(
+//               child: PageView(
+//                 controller: _pageController,
+//                 onPageChanged: (int index) {
+//                   _currentPageNotifier.value = index;
+//                 },
+//                 children: <Widget>[
+//                   // First List View
+//                   ListView.builder(
+//                     itemCount: 20,
+//                     itemBuilder: (context, index) => ListTile(
+//                       title: Text('Item ${index + 1} of List 1'),
+//                     ),
+//                   ),
+//                   // Second List View
+//                   ListView.builder(
+//                     itemCount: 20,
+//                     itemBuilder: (context, index) => ListTile(
+//                       title: Text('Item ${index + 1} of List 2'),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

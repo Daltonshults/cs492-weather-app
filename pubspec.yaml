@@ -30,6 +30,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.17.0
+  page_view_indicators: ^2.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -71,6 +73,17 @@ flutter:
     - assets/sql/insert.sql
     - assets/sql/get_all.sql
     - assets/sql/delete.sql
+    - assets/images/weather/rainy-day.png
+    - assets/images/weather/cloudy.png
+    - assets/images/weather/snowy.png
+    - assets/images/weather/sunny.png
+    - assets/images/wind/north.png
+    - assets/images/wind/northwest.png
+    - assets/images/wind/west.png
+    - assets/images/wind/southwest.png
+    - assets/images/wind/south.png
+    - assets/images/wind/southeast.png
+    - assets\images\wind\east.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
