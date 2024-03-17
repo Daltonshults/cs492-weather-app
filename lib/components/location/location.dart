@@ -21,7 +21,6 @@ class Location extends StatefulWidget {
 class _LocationState extends State<Location> {
   // Edit mode allows user to delete stored locations
   bool _editMode = false;
-
   LocationDatabase? _db;
 
   final List<UserLocation> _locations = [];
@@ -74,6 +73,10 @@ class _LocationState extends State<Location> {
 
   // When an item from the list is tapped, set the current location to whichever one was tapped
   void tapList(index) {
+    if (_editMode) {
+      return;
+    }
+
     widget.setLocation(_locations.elementAt(index));
     widget.backHome!();
   }
@@ -81,6 +84,16 @@ class _LocationState extends State<Location> {
   // There are two ways to add the location
   // First, if the user enters text into the text boxes, geocoding will attempt to find it.
   void addLocationButtonPressed() async {
+    if (cityController.text.isEmpty && zipController.text.isEmpty) {
+      // All fields are empty. Show an error message.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('You need a state, and either a city or a zip code.')),
+      );
+      return;
+    }
+
     UserLocation? location = await getLocationFromAddress(
         cityController.text, stateController.text, zipController.text);
     if (location != null) {
@@ -119,13 +132,17 @@ class _LocationState extends State<Location> {
     return _locations.isNotEmpty ? savedListColumn() : userInput();
   }
 
-  Column savedListColumn() {
-    return Column(
-      children: [
-        SizedBox(height: 160, child: userInput()),
-        savedLocation(),
-        SizedBox(height: 150, child: locationsListWidget()),
-      ],
+  Widget savedListColumn() {
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(height: 160, child: userInput()),
+          savedLocation(),
+          SizedBox(
+              height: MediaQuery.of(context).size.height * 0.55,
+              child: locationsListWidget()),
+        ],
+      ),
     );
   }
 
@@ -146,18 +163,24 @@ class _LocationState extends State<Location> {
   ListView locationsListWidget() => ListView.builder(
       itemCount: _locations.length,
       itemBuilder: (context, index) => ListTile(
-          title: SizedBox(height: 25, child: listItemText(index)),
+          title: SizedBox(height: 50, child: listItemText(index)),
           onTap: () {
             tapList(index);
           }));
 
   Row listItemText(int index) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            width: 200,
-            child: FittedBox(
-              child: Text(
-                  "${_locations.elementAt(index).city}, ${_locations.elementAt(index).state}, ${_locations.elementAt(index).zip}"),
+          Flexible(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8,
+              child: Center(
+                child: Text(
+                  "${_locations.elementAt(index).city}, ${_locations.elementAt(index).state}, ${_locations.elementAt(index).zip}",
+                  overflow: TextOverflow.visible,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
           (_editMode)
