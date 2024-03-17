@@ -6,13 +6,13 @@ class Location extends StatefulWidget {
   // The setter and getter for the active location
   final Function setLocation;
   final Function getLocation;
-  final Function? closeEndDrawer;
+  final Function? backHome;
 
   const Location(
       {super.key,
       required this.setLocation,
       required this.getLocation,
-      this.closeEndDrawer});
+      this.backHome});
 
   @override
   State<Location> createState() => _LocationState();
@@ -44,7 +44,6 @@ class _LocationState extends State<Location> {
 
   void _setLocationsFromDatabase(List<UserLocation> locations) async {
     _locations.addAll(locations);
-  
   }
 
   void _insertLocationIntoDatabase(UserLocation location) async {
@@ -75,8 +74,8 @@ class _LocationState extends State<Location> {
 
   // When an item from the list is tapped, set the current location to whichever one was tapped
   void tapList(index) {
-    widget.closeEndDrawer!();
     widget.setLocation(_locations.elementAt(index));
+    widget.backHome!();
   }
 
   // There are two ways to add the location

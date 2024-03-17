@@ -40,38 +40,41 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return (widget.getLocation() != null && widget.getForecasts().isNotEmpty
-        ? Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 1),
-                child: title(),
-              ),
-              Expanded(
-                child: PageView(
-                  controller: _controller,
-                  children: [
-                    ForecastWidget(
-                      context: context,
-                      location: widget.getLocation(),
-                      forecasts: widget.getForecastsHourly(),
-                    ),
-                    ForecastWidget(
-                      context: context,
-                      location: widget.getLocation(),
-                      forecasts: widget.getForecasts(),
-                    ),
-                  ],
+        ? Container(
+            color: Theme.of(context).colorScheme.inversePrimary,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 1),
+                  child: title(),
                 ),
-              ),
-              pageIndicator(),
-            ],
+                Expanded(
+                  child: PageView(
+                    controller: _controller,
+                    children: [
+                      ForecastWidget(
+                        context: context,
+                        location: widget.getLocation(),
+                        forecasts: widget.getForecastsHourly(),
+                      ),
+                      ForecastWidget(
+                        context: context,
+                        location: widget.getLocation(),
+                        forecasts: widget.getForecasts(),
+                      ),
+                    ],
+                  ),
+                ),
+                pageIndicator(),
+              ],
+            ),
           )
         : Center(child: CircularProgressIndicator()));
   }
 
-  Text title() {
+  Widget title() {
     return Text(
-      _currentPage == 0 ? "Hourly" : "Twice a Day",
+      _currentPage == 0 ? "Hourly" : "Twice Daily",
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
   }
@@ -109,46 +112,49 @@ class ForecastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    var isLandscape = MediaQuery.of(context).size.width > 400;
 
-    return isLandscape
-        ? Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: CombinedForecastWidget(
-                    context: context, location: location, forecasts: forecasts),
-              ),
-              Expanded(
-                flex: 1,
-                child: ListView(
-                    children: forecasts
-                        .skip(1)
-                        .take(23)
-                        .map((forecast) => ShortForecasts(forecast: forecast))
-                        .toList()),
-              ),
-            ],
-          )
-        : Column(
-            children: [
-              Expanded(
-                flex: 1,
-                child: CombinedForecastWidget(
-                    context: context, location: location, forecasts: forecasts),
-              ),
-              Expanded(
-                flex: 4,
-                child: ListView(
-                    children: forecasts
-                        .skip(1)
-                        .take(23)
-                        .map((forecast) => ShortForecasts(forecast: forecast))
-                        .toList()),
-              ),
-            ],
-          );
+    return isLandscape ? landscape(context) : portrait(context);
+  }
+
+  Row landscape(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: CombinedForecastWidget(
+              context: context, location: location, forecasts: forecasts),
+        ),
+        Expanded(
+          flex: 3,
+          child: ListView(
+              children: forecasts
+                  .take(24)
+                  .map((forecast) => ShortForecasts(forecast: forecast))
+                  .toList()),
+        ),
+      ],
+    );
+  }
+
+  Column portrait(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          flex: 2,
+          child: CombinedForecastWidget(
+              context: context, location: location, forecasts: forecasts),
+        ),
+        Expanded(
+          flex: 7,
+          child: ListView(
+              children: forecasts
+                  .take(23)
+                  .map((forecast) => ShortForecasts(forecast: forecast))
+                  .toList()),
+        ),
+      ],
+    );
   }
 }
 
@@ -165,13 +171,25 @@ class CombinedForecastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        LocationTextWidget(location: location),
-        TemperatureWidget(forecasts: forecasts),
-        DescriptionWidget(forecasts: forecasts),
-      ],
+    return Container(
+      // color: Theme.of(context).colorScheme.onPrimary,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.onPrimary,
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.secondary,
+            width: 1,
+          ),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          LocationTextWidget(location: location),
+          TemperatureWidget(forecasts: forecasts),
+          DescriptionWidget(forecasts: forecasts),
+        ],
+      ),
     );
   }
 }
@@ -193,21 +211,32 @@ class DescriptionWidget extends StatelessWidget {
 }
 
 class TemperatureWidget extends StatelessWidget {
-  const TemperatureWidget(
-      {super.key, required this.forecasts, this.max, this.min});
+  const TemperatureWidget({super.key, required this.forecasts});
 
-  final int? min;
-  final int? max;
   final List<WeatherForecast> forecasts;
 
   @override
   Widget build(BuildContext context) {
+    int? min;
+    int? max;
+    if (forecasts.length - 1 > 24) {
+      min = 1000;
+      max = -1000;
+      for (var i = 0; i < 24; i++) {
+        if (min == null || forecasts.elementAt(i).temperature < min) {
+          min = forecasts.elementAt(i).temperature;
+        }
+        if (max == null || forecasts.elementAt(i).temperature > max) {
+          max = forecasts.elementAt(i).temperature;
+        }
+      }
+    }
     return Center(
       child: Text(
         max != null && min != null
-            ? '$max/$minº'
-            : '${forecasts.elementAt(0).temperature}º',
-        style: Theme.of(context).textTheme.displaySmall,
+            ? '  $max/$minºF'
+            : '${forecasts.elementAt(0).temperature}ºF',
+        style: Theme.of(context).textTheme.headlineSmall,
       ),
     );
   }
@@ -224,8 +253,11 @@ class LocationTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("${location.city}, ${location.state}, ${location.zip}",
-          style: Theme.of(context).textTheme.headlineSmall),
+      child: Text(
+        "${location.city}, ${location.state}, ${location.zip}",
+        style: Theme.of(context).textTheme.bodyLarge,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

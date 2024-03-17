@@ -61,6 +61,12 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void backHome() {
+    setState(() {
+      _selectedIndex = 0;
+    });
+  }
+
   void setLocation(UserLocation location) async {
     setState(() {
       _location = location;
@@ -158,10 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
           getForecasts: getForecasts,
           getForecastsHourly: getForecastsHourly,
           setLocation: setLocation),
-      const Text(
-        'Change Location',
-        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-      ),
+      settingsDrawer(),
     ];
     return Scaffold(
       key: _scaffoldKey,
@@ -179,7 +182,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       endDrawer: Drawer(
-        child: settingsDrawer(),
+        child: Text("HELLO WORLD!"),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -216,9 +219,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  SafeArea settingsDrawer() {
-    return SafeArea(
-      child: Column(
+  Widget settingsDrawer() {
+    return Scaffold(
+      body: Column(
         children: [
           SettingsHeaderText(context: context, text: "Settings:"),
           modeToggle(),
@@ -226,9 +229,10 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Location(
-                setLocation: setLocation,
-                getLocation: getLocation,
-                closeEndDrawer: _closeEndDrawer),
+              setLocation: setLocation,
+              getLocation: getLocation,
+              backHome: backHome,
+            ),
           ),
           ElevatedButton(
               onPressed: _closeEndDrawer, child: const Text("Close Settings"))
@@ -255,66 +259,3 @@ class SettingsHeaderText extends StatelessWidget {
     );
   }
 }
-
-
-// import 'package:flutter/material.dart';
-// import 'package:page_view_indicators/page_view_indicators.dart';
-
-// void main() {
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatefulWidget {
-//   @override
-//   _MyAppState createState() => _MyAppState();
-// }
-
-// class _MyAppState extends State<MyApp> {
-//   final _pageController = PageController();
-//   final _currentPageNotifier = ValueNotifier<int>(0);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(
-//           title: Text('Swipeable Lists'),
-//         ),
-//         body: Column(
-//           children: [
-//             CirclePageIndicator(
-//               selectedDotColor: Colors.blue,
-//               dotColor: Colors.grey,
-//               itemCount: 2,
-//               currentPageNotifier: _currentPageNotifier,
-//             ),
-//             Expanded(
-//               child: PageView(
-//                 controller: _pageController,
-//                 onPageChanged: (int index) {
-//                   _currentPageNotifier.value = index;
-//                 },
-//                 children: <Widget>[
-//                   // First List View
-//                   ListView.builder(
-//                     itemCount: 20,
-//                     itemBuilder: (context, index) => ListTile(
-//                       title: Text('Item ${index + 1} of List 1'),
-//                     ),
-//                   ),
-//                   // Second List View
-//                   ListView.builder(
-//                     itemCount: 20,
-//                     itemBuilder: (context, index) => ListTile(
-//                       title: Text('Item ${index + 1} of List 2'),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

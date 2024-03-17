@@ -20,9 +20,10 @@ class ShortForecasts extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border(
           top: BorderSide(
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).colorScheme.secondary,
             width: 2,
           ),
         ),
@@ -46,34 +47,34 @@ class ShortForecasts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Image.network(forecast.icon.split(",")[0]),
-        FutureBuilder<String>(
-          future: windDirection.getWindDirectionImage(forecast.windDirection),
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return imageBox(context, snapshot.data!);
-            }
-          },
+        Expanded(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Image.network(forecast.icon.split(",")[0]),
+          ),
+        ),
+        Expanded(
+          child: FutureBuilder<String>(
+            future: windDirection.getWindDirectionImage(forecast.windDirection),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: imageBox(context, snapshot.data!)),
+                );
+              }
+            },
+          ),
         ),
       ],
     );
   }
-  // Row topRow(BuildContext context) {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //     crossAxisAlignment: CrossAxisAlignment.end,
-  //     children: [
-  //       //imageBox(context, "assets/images/weather/snowy.png"),
-  //       Image.network(forecast.icon.split(",")[0]),
-  //       imageBox(context,
-  //           windDirection.getWindDirectionImage(forecast.windDirection)),
-  //     ],
-  //   );
-  // }
 
   Row bottomRow(String formattedStartTime, String formattedEndTime,
       String formattedDate) {
@@ -86,11 +87,8 @@ class ShortForecasts extends StatelessWidget {
     );
   }
 
-  SizedBox imageBox(BuildContext context, String path) {
-    return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.1,
-        height: MediaQuery.of(context).size.height * 0.1,
-        child: Image(image: AssetImage(path)));
+  Widget imageBox(BuildContext context, String path) {
+    return Image(image: AssetImage(path));
   }
 
   Widget forecastAndTime(String formattedStartTime, String formattedEndTime,
@@ -104,8 +102,8 @@ class ShortForecasts extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(forecast.shortForecast),
-              Text("Time: $formattedStartTime-$formattedEndTime"),
-              Text("Date: $formattedDate"),
+              Text("$formattedStartTime-$formattedEndTime"),
+              Text(formattedDate),
             ],
           ),
         ],
@@ -118,9 +116,9 @@ class ShortForecasts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text("Temp: ${forecast.temperature}º"),
-        Text("Wind: ${forecast.windSpeed}"),
-        Text("Wind Dir.: ${forecast.windDirection}"),
+        Text("${forecast.temperature}ºF"),
+        Text(forecast.windSpeed),
+        Text(forecast.windDirection),
       ],
     );
   }
