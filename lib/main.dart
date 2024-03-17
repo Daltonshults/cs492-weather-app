@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
+
 import 'components/location/location.dart';
 import 'package:flutter/material.dart';
 import 'models/user_location.dart';
@@ -50,6 +53,13 @@ class _MyHomePageState extends State<MyHomePage> {
   List<WeatherForecast> _forecasts = [];
   List<WeatherForecast> _forecastsHourly = [];
   UserLocation? _location;
+  int _selectedIndex = 0;
+
+  void _onTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   void setLocation(UserLocation location) async {
     setState(() {
@@ -142,6 +152,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _widgetOptions = <Widget>[
+      WeatherScreen(
+          getLocation: getLocation,
+          getForecasts: getForecasts,
+          getForecastsHourly: getForecastsHourly,
+          setLocation: setLocation),
+      const Text(
+        'Change Location',
+        style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+      ),
+    ];
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -156,13 +177,21 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: WeatherScreen(
-          getLocation: getLocation,
-          getForecasts: getForecasts,
-          getForecastsHourly: getForecastsHourly,
-          setLocation: setLocation),
+      body: _widgetOptions.elementAt(_selectedIndex),
       endDrawer: Drawer(
         child: settingsDrawer(),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), label: "Selected Location"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.plus_one_rounded), label: "Change Location"),
+        ],
+        currentIndex: _selectedIndex,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+        onTap: _onTapped,
       ),
     );
   }
@@ -226,7 +255,6 @@ class SettingsHeaderText extends StatelessWidget {
     );
   }
 }
-
 
 
 // import 'package:flutter/material.dart';

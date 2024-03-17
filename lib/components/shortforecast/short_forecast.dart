@@ -46,13 +46,34 @@ class ShortForecasts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        //imageBox(context, "assets/images/weather/snowy.png"),
         Image.network(forecast.icon.split(",")[0]),
-        imageBox(context,
-            windDirection.getWindDirectionImage(forecast.windDirection)),
+        FutureBuilder<String>(
+          future: windDirection.getWindDirectionImage(forecast.windDirection),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return imageBox(context, snapshot.data!);
+            }
+          },
+        ),
       ],
     );
   }
+  // Row topRow(BuildContext context) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     crossAxisAlignment: CrossAxisAlignment.end,
+  //     children: [
+  //       //imageBox(context, "assets/images/weather/snowy.png"),
+  //       Image.network(forecast.icon.split(",")[0]),
+  //       imageBox(context,
+  //           windDirection.getWindDirectionImage(forecast.windDirection)),
+  //     ],
+  //   );
+  // }
 
   Row bottomRow(String formattedStartTime, String formattedEndTime,
       String formattedDate) {
@@ -72,16 +93,23 @@ class ShortForecasts extends StatelessWidget {
         child: Image(image: AssetImage(path)));
   }
 
-  Column forecastAndTime(String formattedStartTime, String formattedEndTime,
+  Widget forecastAndTime(String formattedStartTime, String formattedEndTime,
       String formattedDate) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("${forecast.shortForecast} "),
-        Text("Time: $formattedStartTime-$formattedEndTime"),
-        Text("Date: $formattedDate"),
-      ],
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(forecast.shortForecast),
+              Text("Time: $formattedStartTime-$formattedEndTime"),
+              Text("Date: $formattedDate"),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -90,9 +118,9 @@ class ShortForecasts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Text("Temperature: ${forecast.temperature}º"),
+        Text("Temp: ${forecast.temperature}º"),
         Text("Wind: ${forecast.windSpeed}"),
-        Text("Wind Direction: ${forecast.windDirection}"),
+        Text("Wind Dir.: ${forecast.windDirection}"),
       ],
     );
   }

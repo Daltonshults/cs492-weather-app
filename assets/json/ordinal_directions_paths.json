@@ -1,0 +1,17 @@
+{
+    "N": "assets/images/wind/North.png",
+    "NNE": "assets/images/wind/NorthNorthEast.png",
+    "NE": "assets/images/wind/NorthEast.png",
+    "ENE": "assets/images/wind/EastNorthEast.png",
+    "E": "assets/images/wind/East.png",
+    "ESE": "assets/images/wind/EastSouthEast.png",
+    "SE": "assets/images/wind/SouthEast.png",
+    "SSE": "assets/images/wind/SouthSouthEast.png",
+    "S": "assets/images/wind/South.png",
+    "SSW": "assets/images/wind/SouthSouthWest.png",
+    "SW": "assets/images/wind/SouthWest.png",
+    "W": "assets/images/wind/West.png",
+    "WSW": "assets/images/wind/WestSouthWest.png",
+    "NW": "assets/images/wind/NorthWest.png",
+    "NNW": "assets/images/wind/NorthNorthWest.png"
+}
