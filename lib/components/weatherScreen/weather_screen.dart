@@ -42,22 +42,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return (widget.getLocation() != null && widget.getForecasts().isNotEmpty
         ? Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List<Widget>.generate(
-                  2,
-                  (int index) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.all(4.0),
-                    height: 10,
-                    width: 10,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: _currentPage == index ? Colors.blue : Colors.grey,
-                    ),
-                  ),
-                ),
-              ),
+              title(),
               Expanded(
                 child: PageView(
                   controller: _controller,
@@ -75,9 +60,36 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   ],
                 ),
               ),
+              pageIndicator(),
             ],
           )
         : Center(child: CircularProgressIndicator()));
+  }
+
+  Text title() {
+    return Text(
+      _currentPage == 0 ? "Hourly" : "Twice a Day",
+      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    );
+  }
+
+  Row pageIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List<Widget>.generate(
+        2,
+        (int index) => AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.all(4.0),
+          height: 10,
+          width: 10,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _currentPage == index ? Colors.blue : Colors.grey,
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -154,7 +166,7 @@ class TemperatureWidget extends StatelessWidget {
       width: 500,
       height: 60,
       child: Center(
-        child: Text('${forecasts.elementAt(0).temperature}º',
+        child: Text(' ${forecasts.elementAt(0).temperature}º',
             style: Theme.of(context).textTheme.displayLarge),
       ),
     );

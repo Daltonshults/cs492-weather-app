@@ -77,13 +77,22 @@ flutter:
     - assets/images/weather/cloudy.png
     - assets/images/weather/snowy.png
     - assets/images/weather/sunny.png
-    - assets/images/wind/north.png
-    - assets/images/wind/northwest.png
-    - assets/images/wind/west.png
-    - assets/images/wind/southwest.png
-    - assets/images/wind/south.png
-    - assets/images/wind/southeast.png
-    - assets\images\wind\east.png
+    - assets\images\wind\East.png
+    - assets\images\wind\EastNorthEast.png
+    - assets\images\wind\EastSouthEast.png
+    - assets\images\wind\North.png
+    - assets\images\wind\NorthEast.png
+    - assets\images\wind\NorthNorthEast.png
+    - assets\images\wind\NorthNorthWest.png
+    - assets\images\wind\NorthWest.png
+    - assets\images\wind\South.png
+    - assets\images\wind\SouthEast.png
+    - assets\images\wind\SouthSouthEast.png
+    - assets\images\wind\SouthSouthWest.png
+    - assets\images\wind\SouthWest.png
+    - assets\images\wind\West.png
+    - assets\images\wind\WestNorthWest.png
+    - assets\images\wind\WestSouthWest.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

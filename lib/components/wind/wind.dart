@@ -1,16 +1,23 @@
 class WindDirection {
   final Map<String, String> directions = {
-    "N": "assets/images/wind/north.png",
-    "NE": "assets/images/wind/northeast.png",
-    "E": "assets/images/wind/east.png",
-    "SE": "assets/images/wind/southeast.png",
-    "S": "assets/images/wind/south.png",
-    "SW": "assets/images/wind/southwest.png",
-    "W": "assets/images/wind/west.png",
-    "NW": "assets/images/wind/northwest.png"
+    "N": "assets/images/wind/North.png",
+    "NNE": "assets/images/wind/NorthNorthEast.png",
+    "NE": "assets/images/wind/NorthEast.png",
+    "ENE": "assets/images/wind/EastNorthEast.png",
+    "E": "assets/images/wind/East.png",
+    "ESE": "assets/images/wind/EastSouthEast.png",
+    "SE": "assets/images/wind/SouthEast.png",
+    "SSE": "assets/images/wind/SouthSouthEast.png",
+    "S": "assets/images/wind/South.png",
+    "SSW": "assets/images/wind/SouthSouthWest.png",
+    "SW": "assets/images/wind/SouthWest.png",
+    "W": "assets/images/wind/West.png",
+    "WSW": "assets/images/wind/WestSouthWest.png",
+    "NW": "assets/images/wind/NorthWest.png",
+    "NNW": "assets/images/wind/NorthNorthWest.png",
   };
 
   String getWindDirectionImage(String direction) {
-    return directions[direction] ?? "assets/images/wind/north.png";
+    return directions[direction] ?? "assets/images/wind/North.png";
   }
 }

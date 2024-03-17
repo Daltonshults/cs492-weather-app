@@ -28,11 +28,14 @@ class ShortForecasts extends StatelessWidget {
         ),
       ),
       child: ListTile(
-        subtitle: Column(
-          children: [
-            topRow(context),
-            bottomRow(formattedStartTime, formattedEndTime, formattedDate),
-          ],
+        subtitle: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: Column(
+            children: [
+              topRow(context),
+              bottomRow(formattedStartTime, formattedEndTime, formattedDate),
+            ],
+          ),
         ),
       ),
     );
@@ -43,7 +46,8 @@ class ShortForecasts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        imageBox(context, "assets/images/weather/snowy.png"),
+        //imageBox(context, "assets/images/weather/snowy.png"),
+        Image.network(forecast.icon.split(",")[0]),
         imageBox(context,
             windDirection.getWindDirectionImage(forecast.windDirection)),
       ],
@@ -74,7 +78,7 @@ class ShortForecasts extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Forecast: ${forecast.shortForecast} "),
+        Text("${forecast.shortForecast} "),
         Text("Time: $formattedStartTime-$formattedEndTime"),
         Text("Date: $formattedDate"),
       ],
