@@ -164,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
           getForecasts: getForecasts,
           getForecastsHourly: getForecastsHourly,
           setLocation: setLocation),
-      settingsDrawer(),
+      locationPage(),
     ];
     return Scaffold(
       key: _scaffoldKey,
@@ -182,14 +182,14 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       endDrawer: Drawer(
-        child: Text("HELLO WORLD!"),
+        child: modeToggle(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
               icon: Icon(Icons.home), label: "Selected Location"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.plus_one_rounded), label: "Change Location"),
+              icon: Icon(Icons.add), label: "Change Location"),
         ],
         currentIndex: _selectedIndex,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -219,24 +219,24 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget settingsDrawer() {
+  Widget locationPage() {
     return Scaffold(
-      body: Column(
-        children: [
-          SettingsHeaderText(context: context, text: "Settings:"),
-          modeToggle(),
-          SettingsHeaderText(context: context, text: "My Locations:"),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Location(
-              setLocation: setLocation,
-              getLocation: getLocation,
-              backHome: backHome,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // SettingsHeaderText(context: context, text: "Settings:"),
+            // modeToggle(),
+            SettingsHeaderText(context: context, text: "My Locations:"),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Location(
+                setLocation: setLocation,
+                getLocation: getLocation,
+                backHome: backHome,
+              ),
             ),
-          ),
-          ElevatedButton(
-              onPressed: _closeEndDrawer, child: const Text("Close Settings"))
-        ],
+          ],
+        ),
       ),
     );
   }
