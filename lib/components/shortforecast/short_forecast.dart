@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../models/weather_forecast.dart';
 import '../wind/wind.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart';
 
 class ShortForecasts extends StatelessWidget {
   final WeatherForecast forecast;
@@ -20,10 +22,10 @@ class ShortForecasts extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.background,
         border: Border(
           top: BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.onBackground,
             width: 2,
           ),
         ),
@@ -42,6 +44,21 @@ class ShortForecasts extends StatelessWidget {
     );
   }
 
+  String getWeatherDescriptor(String url) {
+    String splitUrl1 = url.split(",")[0];
+    splitUrl1 = splitUrl1.split("?")[0];
+    List<String> urlList = splitUrl1.split("/");
+    String splitUrl2 = urlList[urlList.length - 1];
+    return splitUrl2;
+  }
+
+  Future<String> getLocalImagePath(String weatherState) async {
+    String jsonString =
+        await rootBundle.loadString('assets/json/weather_state.json');
+    Map<String, dynamic> jsonData = jsonDecode(jsonString);
+    return jsonData[weatherState];
+  }
+
   Row topRow(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,7 +67,21 @@ class ShortForecasts extends StatelessWidget {
         Expanded(
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Image.network(forecast.icon.split(",")[0]),
+            child: FutureBuilder<String>(
+              future: getLocalImagePath(getWeatherDescriptor(forecast.icon)),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: imageBoxWeather(context, snapshot.data!),
+                  );
+                }
+              },
+            ),
           ),
         ),
         Expanded(
@@ -66,7 +97,7 @@ class ShortForecasts extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Align(
                       alignment: Alignment.centerRight,
-                      child: imageBox(context, snapshot.data!)),
+                      child: imageBoxArrow(context, snapshot.data!)),
                 );
               }
             },
@@ -87,8 +118,21 @@ class ShortForecasts extends StatelessWidget {
     );
   }
 
-  Widget imageBox(BuildContext context, String path) {
-    return Image(image: AssetImage(path));
+  Widget imageBoxArrow(BuildContext context, String path) {
+    return Image(
+      image: AssetImage(path),
+      color: Theme.of(context).colorScheme.onBackground,
+    );
+  }
+
+  Widget imageBoxWeather(BuildContext context, String imagePath) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.1,
+      child: Image.asset(
+        imagePath,
+        fit: BoxFit.contain,
+      ),
+    );
   }
 
   Widget forecastAndTime(String formattedStartTime, String formattedEndTime,

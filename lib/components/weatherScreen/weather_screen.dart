@@ -91,7 +91,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
           width: 10,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: _currentPage == index ? Colors.blue : Colors.grey,
+            color: _currentPage == index
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.inverseSurface,
           ),
         ),
       ),
@@ -174,10 +176,10 @@ class CombinedForecastWidget extends StatelessWidget {
     return Container(
       // color: Theme.of(context).colorScheme.onPrimary,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.background,
         border: Border(
           bottom: BorderSide(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Theme.of(context).colorScheme.onBackground,
             width: 1,
           ),
         ),

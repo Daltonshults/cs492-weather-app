@@ -30,12 +30,41 @@ class MyApp extends StatelessWidget {
         builder: (_, mode, __) {
           return MaterialApp(
             title: title,
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
+            theme: lightTheme(),
+            darkTheme: darkTheme(),
             themeMode: mode,
             home: MyHomePage(title: title, notifier: _notifier),
           );
         });
+  }
+
+  ThemeData lightTheme() {
+    return ThemeData(
+      primarySwatch: Colors.blue,
+      colorScheme: const ColorScheme.light(
+        primary: Color.fromARGB(255, 243, 33, 33),
+        secondary: Color.fromARGB(0, 94, 94, 94),
+        inversePrimary: Color.fromARGB(255, 2, 153, 153),
+        // Add other colors as needed
+      ),
+      // Add other properties as needed
+    );
+  }
+
+  ThemeData darkTheme() {
+    return ThemeData(
+      brightness: Brightness.dark,
+      primarySwatch: Colors.deepOrange,
+      colorScheme: const ColorScheme.dark(
+        primary: Color.fromARGB(192, 19, 193, 236),
+        secondary: Colors.red,
+        inversePrimary: Colors.deepOrange,
+        background: Color.fromARGB(255, 24, 24, 24),
+        onBackground: Color.fromARGB(255, 255, 255, 255),
+        // Add other colors as needed
+      ),
+      // Add other properties as needed
+    );
   }
 }
 
@@ -193,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         currentIndex: _selectedIndex,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        selectedItemColor: Theme.of(context).colorScheme.onPrimary,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         onTap: _onTapped,
       ),
     );
