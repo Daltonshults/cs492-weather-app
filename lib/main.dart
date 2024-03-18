@@ -10,10 +10,12 @@ import 'components/weatherScreen/weather_screen.dart';
 
 import 'models/weather_forecast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 const sqlCreateDatabase = 'assets/sql/create.sql';
 
 void main() {
+  tz.initializeTimeZones();
   runApp(MyApp());
 }
 
@@ -90,13 +92,18 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void backHome() {
+  void backHome() async {
+    await _getForecasts();
     setState(() {
       _selectedIndex = 0;
     });
   }
 
   void setLocation(UserLocation location) async {
+    // _location = location;
+    // await _getForecasts();
+    // _setLocationPref(location);
+    // setState(() {});
     setState(() {
       _location = location;
       _getForecasts();
@@ -109,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
     prefs.setString("location", location.toJsonString());
   }
 
-  void _getForecasts() async {
+  Future<void> _getForecasts() async {
     if (_location != null) {
       // We collect both the twice-daily forecasts and the hourly forecasts
       List<WeatherForecast> forecasts =
@@ -151,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _light = widget.notifier.value == ThemeMode.light;
-
+    _getForecasts();
     _initMode();
   }
 
@@ -209,10 +216,11 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
-      endDrawer: Drawer(
-        child: modeToggle(),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
+      endDrawer: settingsDrawer(context),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -225,6 +233,26 @@ class _MyHomePageState extends State<MyHomePage> {
         selectedItemColor: Theme.of(context).colorScheme.primary,
         onTap: _onTapped,
       ),
+    );
+  }
+
+  Drawer settingsDrawer(BuildContext context) {
+    return Drawer(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            modeToggle(),
+            ElevatedButton(
+                onPressed: _closeEndDrawer,
+                child: Text(
+                  "Close",
+                  selectionColor: Theme.of(context).colorScheme.onBackground,
+                )),
+            Text(_location != null
+                ? "${_location!.latitude}, ${_location!.longitude}"
+                : "Location is not available")
+          ]),
     );
   }
 
@@ -252,9 +280,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // SettingsHeaderText(context: context, text: "Settings:"),
-            // modeToggle(),
             SettingsHeaderText(context: context, text: "My Locations:"),
             Padding(
               padding: const EdgeInsets.all(8.0),

@@ -13,5 +13,6 @@
     "W": "assets/images/wind/West.png",
     "WSW": "assets/images/wind/WestSouthWest.png",
     "NW": "assets/images/wind/NorthWest.png",
-    "NNW": "assets/images/wind/NorthNorthWest.png"
+    "NNW": "assets/images/wind/NorthNorthWest.png",
+    "WNW": "assets/images/wind/WestNorthWest.png"
 }
