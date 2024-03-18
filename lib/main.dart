@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _getForecasts();
     });
   }
 
@@ -221,18 +222,22 @@ class _MyHomePageState extends State<MyHomePage> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       endDrawer: settingsDrawer(context),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home), label: "Selected Location"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.add), label: "Change Location"),
-        ],
-        currentIndex: _selectedIndex,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        onTap: _onTapped,
-      ),
+      bottomNavigationBar: myBottomNavBar(context),
+    );
+  }
+
+  BottomNavigationBar myBottomNavBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+            icon: Icon(Icons.home), label: "Current Location"),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.add), label: "Change Location"),
+      ],
+      currentIndex: _selectedIndex,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      onTap: _onTapped,
     );
   }
 
@@ -250,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   selectionColor: Theme.of(context).colorScheme.onBackground,
                 )),
             Text(_location != null
-                ? "${_location!.latitude}, ${_location!.longitude}"
+                ? "Lat: ${_location!.latitude.toStringAsFixed(2)}, Long: ${_location!.longitude.toStringAsFixed(2)}"
                 : "Location is not available")
           ]),
     );

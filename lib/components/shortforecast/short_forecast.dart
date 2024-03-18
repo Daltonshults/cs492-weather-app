@@ -13,9 +13,12 @@ class ShortForecasts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime startTime = DateTime.parse(forecast.startTime).toLocal();
+    DateTime startTime = DateTime.parse(
+        forecast.startTime.substring(0, forecast.startTime.length - 6));
     String formattedStartTime = DateFormat.jm().format(startTime);
-    DateTime endTime = DateTime.parse(forecast.endTime).toLocal();
+    DateTime endTime = DateTime.parse(
+            forecast.endTime.substring(0, forecast.endTime.length - 6))
+        .toLocal();
     String formattedEndTime = DateFormat.jm().format(endTime);
     String formattedDate = DateFormat('MM/dd/yy').format(startTime);
 

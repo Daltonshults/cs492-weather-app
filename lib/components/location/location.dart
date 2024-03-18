@@ -149,7 +149,7 @@ class _LocationState extends State<Location> {
   ListView locationsListWidget() => ListView.builder(
       itemCount: _locations.length,
       itemBuilder: (context, index) => ListTile(
-          title: Flexible(child: listItemText(index)),
+          title: SizedBox(height: 25, child: listItemText(index)),
           onTap: () {
             tapList(index);
           }));
