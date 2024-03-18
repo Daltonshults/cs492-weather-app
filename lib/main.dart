@@ -108,16 +108,6 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     });
   }
-  // void setLocation(UserLocation location) async {
-  //   // _location = location;
-  //   // await _getForecasts();
-  //   // _setLocationPref(location);
-  //   // setState(() {});
-  //   _getForecasts().then(setState(() {
-  //     _location = location;
-  //     _setLocationPref(location);
-  //   }));
-  // }
 
   void _setLocationPref(UserLocation location) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
