@@ -125,7 +125,9 @@ class _LocationState extends State<Location> {
       children: [
         SizedBox(height: 160, child: userInput()),
         savedLocation(),
-        SizedBox(height: 150, child: locationsListWidget()),
+        SizedBox(
+            height: MediaQuery.of(context).size.height * .45,
+            child: locationsListWidget()),
       ],
     );
   }
