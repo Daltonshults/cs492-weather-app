@@ -21,7 +21,8 @@ class ShortForecasts extends StatelessWidget {
         .toLocal();
     String formattedEndTime = DateFormat.jm().format(endTime);
     String formattedDate = DateFormat('MM/dd/yy').format(startTime);
-
+    print(
+        "Starttime: $startTime\nFormattedSt: $formattedStartTime\nForecastST: ${forecast.startTime}");
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.background,

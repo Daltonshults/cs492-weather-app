@@ -77,17 +77,25 @@ Future<List<WeatherForecast>> getWeatherForecasts(
 
   // send a request to the weather api to get forecast details
   String forecastUrl = "https://api.weather.gov/points/$lat,$long";
-  http.Response forecastResponse = await http.get(Uri.parse(forecastUrl));
+  http.Response forecastResponse =
+      await http.get(Uri.parse(forecastUrl), headers: {
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+  });
   final Map<String, dynamic> forecastJson = jsonDecode(forecastResponse.body);
 
   // grabs the forecasts url from the json response
   final String currentForecastsUrl = hourly
       ? forecastJson["properties"]["forecastHourly"]
       : forecastJson["properties"]["forecast"];
-
+  print("currentForecastsUrl: $currentForecastsUrl");
   // send another request to the API which will return the specifics of the twice-daily forecasts
   http.Response currentForecastsResponse =
-      await http.get(Uri.parse(currentForecastsUrl));
+      await http.get(Uri.parse(currentForecastsUrl), headers: {
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
+  });
+
   final Map<String, dynamic> currentForecastsJson =
       jsonDecode(currentForecastsResponse.body);
 
